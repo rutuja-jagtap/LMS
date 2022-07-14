@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="LMSdbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="course">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="course_name" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="course_duration" Type="Int32" />
+    <NavigationProperty Name="registrations" Relationship="Self.FK_registration_course" FromRole="course" ToRole="registration" />
+  </EntityType>
+  <EntityType Name="registration">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="firstname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="lastname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="course_id" Type="Int32" />
+    <Property Name="prn" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="mobile_no" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="address" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="course" Relationship="Self.FK_registration_course" FromRole="registration" ToRole="course" />
+    <NavigationProperty Name="registration1" Relationship="Self.FK_registration_registration" FromRole="registration" ToRole="registration1" />
+    <NavigationProperty Name="registration2" Relationship="Self.FK_registration_registration" FromRole="registration1" ToRole="registration" />
+  </EntityType>
+  <EntityType Name="user">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="firstname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="lastname" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="username" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="password" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+  </EntityType>
+  <Association Name="FK_registration_course">
+    <End Role="course" Type="Self.course" Multiplicity="0..1" />
+    <End Role="registration" Type="Self.registration" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="course">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="registration">
+        <PropertyRef Name="course_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_registration_registration">
+    <End Role="registration" Type="Self.registration" Multiplicity="1" />
+    <End Role="registration1" Type="Self.registration" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="registration">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="registration1">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="LMSdbEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="courses" EntityType="Self.course" />
+    <EntitySet Name="registrations" EntityType="Self.registration" />
+    <EntitySet Name="users" EntityType="Self.user" />
+    <AssociationSet Name="FK_registration_course" Association="Self.FK_registration_course">
+      <End Role="course" EntitySet="courses" />
+      <End Role="registration" EntitySet="registrations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_registration_registration" Association="Self.FK_registration_registration">
+      <End Role="registration" EntitySet="registrations" />
+      <End Role="registration1" EntitySet="registrations" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
